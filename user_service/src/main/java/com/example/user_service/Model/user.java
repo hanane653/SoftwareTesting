@@ -2,6 +2,8 @@ package com.example.user_service.Model;
 
 import jakarta.persistence.*;
 
+import java.util.*;
+
 @Entity
 @Table(name = "utilisateur")
 public class user {
@@ -18,7 +20,9 @@ private String email;
 private String pole;
 @Column(name="role")
 @Enumerated(EnumType.STRING)
-private Role role ;
+private Role role;
+@Column(name="password")
+private String password;
 
     public int getId_user() {
         return Id_user;
@@ -60,11 +64,19 @@ private Role role ;
         this.pole = pole;
     }
 
-    public Role getRole() {
+    public Role getRoles() {
         return role;
     }
 
-    public void setRole(Role role) {
+    public void setRoles(Role role) {
         this.role = role;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 }

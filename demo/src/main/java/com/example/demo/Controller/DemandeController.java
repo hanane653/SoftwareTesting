@@ -1,14 +1,22 @@
 package com.example.demo.Controller;
 
-import com.example.demo.Model.Demande;
-import com.example.demo.Model.StatutDemande;
+import com.example.demo.Model.*;
 import com.example.demo.Service.DemandeService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.time.LocalDate;
 import java.util.List;
 
+@CrossOrigin(origins = "http://localhost:3000")
 @RestController
 @RequestMapping("/api/demandes")
 public class DemandeController {
@@ -16,9 +24,56 @@ public class DemandeController {
     @Autowired
     private DemandeService demandeService;
 
+    @Value("${file.upload-dir}")
+    private String uploadDir;
+
+    // Endpoint for creating a demande with multipart data
     @PostMapping
-    public ResponseEntity<Demande> creerDemande(@RequestBody Demande demande) {
-        return ResponseEntity.ok(demandeService.creerDemande(demande));
+    public ResponseEntity<?> creerDemande(
+            @RequestParam("titre") String titre,
+            @RequestParam("description") String description,
+            @RequestParam("type") TypeDemande type,
+            @RequestParam("priorite") PrioriteDemande priorite,
+            @RequestParam("dateSoumission") LocalDate dateSoumission,
+            @RequestParam("dateTraitement") LocalDate dateTraitement,
+            @RequestParam(value = "piecesJointes", required = false) MultipartFile[] files) {
+
+        // Create a Demande object and populate it with form fields
+        Demande demande = new Demande();
+        demande.setTitre(titre);
+        demande.setDescription(description);
+        demande.setType(type);
+        demande.setPriorite(priorite);
+        demande.setDateSoumission(dateSoumission);
+        demande.setDateTraitement(dateTraitement);
+
+        // Process and save the files if they exist
+        if (files != null && files.length > 0) {
+            for (MultipartFile file : files) {
+                // Enregistrer le fichier sur le disque
+                Path filePath = Paths.get(uploadDir).resolve(file.getOriginalFilename());
+                try {
+                    file.transferTo(filePath);
+
+                    // Create a PieceJointe and associate it with the Demande
+                    PieceJointe pieceJointe = new PieceJointe();
+                    pieceJointe.setNomFichier(file.getOriginalFilename());
+                    pieceJointe.setCheminFichier(filePath.toString());
+                    pieceJointe.setDemande(demande);
+
+
+                    demande.getPiecesJointes().add(pieceJointe);
+
+                } catch (IOException e) {
+                    return ResponseEntity.status(500).body("Erreur lors du téléchargement des fichiers.");
+                }
+            }
+
+
+            return ResponseEntity.ok(demandeService.creerDemande(demande));
+        }
+
+        return ResponseEntity.status(400).body("Aucun fichier téléchargé.");
     }
 
     @GetMapping
@@ -35,5 +90,39 @@ public class DemandeController {
     public ResponseEntity<List<Demande>> getByStatut(@PathVariable StatutDemande statut) {
         return ResponseEntity.ok(demandeService.getDemandesParStatut(statut));
     }
-}
 
+    @PostMapping("/{idDemande}/ajouterFichier")
+    public ResponseEntity<String> addFileToDemande(
+            @PathVariable int idDemande,
+            @RequestParam("file") MultipartFile file) {
+
+        // Check if the file is empty
+        if (file.isEmpty()) {
+            return ResponseEntity.badRequest().body("Aucun fichier sélectionné.");
+        }
+
+        // Ensure the upload directory exists
+        try {
+            Files.createDirectories(Paths.get(uploadDir));
+        } catch (IOException e) {
+            return ResponseEntity.status(500).body("Erreur lors de la création du répertoire.");
+        }
+
+        // Generate the path to store the file
+        Path path = Paths.get(uploadDir, file.getOriginalFilename());
+
+        try {
+            // Save the file to the specified path
+            file.transferTo(path.toFile());
+            // You can also save file information in the database if needed
+            return ResponseEntity.ok("Fichier téléchargé avec succès.");
+        } catch (IOException e) {
+            return ResponseEntity.status(500).body("Erreur lors du téléchargement du fichier.");
+        }
+    }
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<String> handleException(Exception ex) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body("Erreur : " + ex.getMessage());
+    }
+}

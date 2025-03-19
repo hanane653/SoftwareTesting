@@ -3,6 +3,7 @@ package com.example.demo.Model;
 import jakarta.persistence.*;
 
 import java.time.LocalDate;
+import java.util.List;
 @Entity
 @Table(name = "demande")
 public class Demande {
@@ -27,6 +28,9 @@ public class Demande {
     private LocalDate dateSoumission;
     @Column(name = "dateTraitement")
     private LocalDate dateTraitement;
+
+    @OneToMany(mappedBy = "demande", cascade = CascadeType.ALL)
+    private List<PieceJointe> piecesJointes;
 
 
     public int getId_Demande() {
@@ -91,6 +95,14 @@ public class Demande {
 
     public void setType(TypeDemande type) {
         this.type = type;
+    }
+
+    public List<PieceJointe> getPiecesJointes() {
+        return piecesJointes;
+    }
+
+    public void setPiecesJointes(List<PieceJointe> piecesJointes) {
+        this.piecesJointes = piecesJointes;
     }
 }
 
