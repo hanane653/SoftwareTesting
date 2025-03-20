@@ -8,7 +8,6 @@ const DemandeForm = () => {
     type: '',
     priorite: '',
     statut: '',  
-    dateSoumission: '', 
     dateTraitement: '', 
     piecesJointes: [],
   });
@@ -57,7 +56,6 @@ const handleAddFichier = () => {
     dataToSend.append('description', formData.description);
     dataToSend.append('type', formData.type);
     dataToSend.append('priorite', formData.priorite);
-    dataToSend.append('dateSoumission', formData.dateSoumission);
     dataToSend.append('dateTraitement', formData.dateTraitement);
 
     // Vérification des fichiers ajoutés avant envoi
@@ -90,7 +88,6 @@ const handleAddFichier = () => {
           type: '',
           priorite: '',
           statut: '',
-          dateSoumission: '',
           dateTraitement: '',
           piecesJointes: [],
         });
@@ -178,20 +175,7 @@ const handleAddFichier = () => {
               </select>
             </div>
 
-            {/* Date Soumission Field */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Date de Soumission</label>
-              <input
-                type="date"
-                name="dateSoumission"
-                value={formData.dateSoumission}
-                onChange={handleChange}
-                className="w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#F4A300]"
-                required
-              />
-            </div>
-
-            {/* Date Traitement Field */}
+           {/* Date Traitement Field */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">Date de Traitement</label>
               <input
