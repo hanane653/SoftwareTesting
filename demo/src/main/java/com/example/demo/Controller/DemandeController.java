@@ -14,6 +14,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 @CrossOrigin(origins = "http://localhost:3000")
@@ -27,35 +28,33 @@ public class DemandeController {
     @Value("${file.upload-dir}")
     private String uploadDir;
 
-    // Endpoint for creating a demande with multipart data
     @PostMapping
     public ResponseEntity<?> creerDemande(
             @RequestParam("titre") String titre,
             @RequestParam("description") String description,
             @RequestParam("type") TypeDemande type,
             @RequestParam("priorite") PrioriteDemande priorite,
-            @RequestParam("dateSoumission") LocalDate dateSoumission,
             @RequestParam("dateTraitement") LocalDate dateTraitement,
             @RequestParam(value = "piecesJointes", required = false) MultipartFile[] files) {
 
-        // Create a Demande object and populate it with form fields
+
         Demande demande = new Demande();
         demande.setTitre(titre);
         demande.setDescription(description);
         demande.setType(type);
         demande.setPriorite(priorite);
-        demande.setDateSoumission(dateSoumission);
         demande.setDateTraitement(dateTraitement);
+        if(demande.getPiecesJointes() == null)
+        {
+            demande.setPiecesJointes(new ArrayList<>());
+        }
 
-        // Process and save the files if they exist
         if (files != null && files.length > 0) {
             for (MultipartFile file : files) {
-                // Enregistrer le fichier sur le disque
                 Path filePath = Paths.get(uploadDir).resolve(file.getOriginalFilename());
-                try {
-                    file.transferTo(filePath);
+                try (var inputStream = file.getInputStream()) {
+                    Files.copy(inputStream, filePath);
 
-                    // Create a PieceJointe and associate it with the Demande
                     PieceJointe pieceJointe = new PieceJointe();
                     pieceJointe.setNomFichier(file.getOriginalFilename());
                     pieceJointe.setCheminFichier(filePath.toString());
@@ -65,6 +64,7 @@ public class DemandeController {
                     demande.getPiecesJointes().add(pieceJointe);
 
                 } catch (IOException e) {
+                    e.printStackTrace();
                     return ResponseEntity.status(500).body("Erreur lors du téléchargement des fichiers.");
                 }
             }

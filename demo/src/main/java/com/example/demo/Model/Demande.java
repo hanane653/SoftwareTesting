@@ -3,6 +3,7 @@ package com.example.demo.Model;
 import jakarta.persistence.*;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 @Entity
 @Table(name = "demande")
@@ -29,9 +30,12 @@ public class Demande {
     @Column(name = "dateTraitement")
     private LocalDate dateTraitement;
 
-    @OneToMany(mappedBy = "demande", cascade = CascadeType.ALL)
-    private List<PieceJointe> piecesJointes;
+    @OneToMany(mappedBy = "demande", cascade = CascadeType.ALL , orphanRemoval = true)
+    private List<PieceJointe> piecesJointes = new ArrayList<>();
 
+    public Demande() {
+        this.piecesJointes = new ArrayList<>();
+    }
 
     public int getId_Demande() {
         return Id_Demande;
@@ -98,6 +102,9 @@ public class Demande {
     }
 
     public List<PieceJointe> getPiecesJointes() {
+        if (piecesJointes == null) {
+            piecesJointes = new ArrayList<>();
+        }
         return piecesJointes;
     }
 
