@@ -35,7 +35,12 @@ private String username;
 private String password;
 
 
-
+    @PrePersist
+    public void prePersist() {
+        if (password != null && !password.startsWith("$2a$")) {
+            password = new BCryptPasswordEncoder().encode(password);
+        }
+    }
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
 

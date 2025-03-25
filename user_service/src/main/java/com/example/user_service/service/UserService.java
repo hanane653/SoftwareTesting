@@ -33,8 +33,10 @@ public class UserService {
 
 
     public user saveUtilisateur(user user) {
+        // Encoder le mot de passe en utilisant BCrypt
         if (user.getPassword() != null && !user.getPassword().startsWith("$2a$")) {
-            user.setPassword(passwordEncoder.encode(user.getPassword()));
+            String encodedPassword = passwordEncoder.encode(user.getPassword());
+            user.setPassword(encodedPassword);
         }
         return userRepository.save(user);
     }
