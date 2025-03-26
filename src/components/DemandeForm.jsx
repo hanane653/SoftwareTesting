@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import image from '../assets/attijari.jpg';
+import image2 from "../assets/bk-footer.png";
+import { useNavigate } from "react-router-dom";
 
 const DemandeForm = () => {
   const [formData, setFormData] = useState({
@@ -13,6 +15,9 @@ const DemandeForm = () => {
   });
 
   const [fichier, setFichier] = useState(null);
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+   const navigate = useNavigate();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -98,112 +103,116 @@ const handleAddFichier = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100 p-6">
-      <div className="bg-white shadow-xl rounded-2xl flex flex-col md:flex-row overflow-hidden w-full max-w-5xl">
+    <div className="min-h-screen relative">
+    {/* Image de fond avec filtre */}
+    <div
+      className="absolute inset-0 bg-cover bg-center filter grayscale brightness-200"
+      style={{
+        backgroundImage: `url(${image2})`,
+        backgroundSize: 'cover', 
+        backgroundPosition: 'center',
+        zIndex: 0,
+      }}
+    ></div>
+    
+      {/* Contenu principal au-dessus de l'image */}
+      <div className="relative z-10 flex flex-col items-center justify-center min-h-screen"
+           style={{ fontFamily: `'Times New Roman', Times, serif` }}>
         
-        {/* Image Section */}
-        <div className="md:w-1/2 hidden md:block">
-          <img
-            src={image}
-            alt="Form Illustration"
-            className="w-full h-full object-contain rounded-l-2xl"
-          />
-        </div>
+        <img src={image} alt="Logo Attijari" className="h-24 w-auto mb-6" />
 
-        {/* Form Section */}
-        <div className="w-full md:w-1/2 p-8 space-y-6">
-          <h2 className="text-3xl font-bold text-[#C8102E]">Créer une Demande</h2>
+        <div className="bg-white bg-opacity-95 shadow-lg p-10 w-full max-w-md rounded-none">
+          <h2 className="text-2xl font-bold text-center text-gray-800 mb-6">Bienvenue</h2>
+          <h3 className="text-xl text-center text-gray-800 mb-6">
+            Veuillez soumettre votre demande 
+          </h3>
 
-          <form onSubmit={handleSubmit} className="space-y-5">
-            {/* Titre Field */}
+          {error && (
+            <p className="text-red-600 text-sm text-center mb-4">{error}</p>
+          )}
+
+          <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Titre</label>
               <input
                 type="text"
                 name="titre"
                 value={formData.titre}
                 onChange={handleChange}
-                className="w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#F4A300]"
+                placeholder="Titre de la demande"
+                className="w-full px-4 py-2 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-orange-300 italic"
+                style={{ fontFamily: `'Times New Roman', Times, serif` }}
                 required
               />
             </div>
-
-            {/* Description Field */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
               <textarea
-                name="description"
                 value={formData.description}
                 onChange={handleChange}
-                className="w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#F4A300]"
+                placeholder="Description"
+                className="w-full px-4 py-2 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-orange-300 italic"
+                style={{ fontFamily: `'Times New Roman', Times, serif` }}
                 required
               />
             </div>
-
-            {/* Type Field */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Type</label>
               <select
                 name="type"
                 value={formData.type}
                 onChange={handleChange}
-                className="w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#F4A300]"
-                required
-              >
-                <option value="">Sélectionner un type</option>
-                <option value="HOMOLOGATION">HOMOLOGATION</option>
-                <option value="FONCTIONNEL">FONCTIONNEL</option>
-                <option value="NON_FONCTIONNEL">NON_FONCTIONNEL</option>
-                <option value="AUTOMATISATION">AUTOMATISATION</option>
-              </select>
+                className="w-full px-4 py-2 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-orange-300 italic"
+                style={{ fontFamily: `'Times New Roman', Times, serif` }}
+                required>
+                 <option value="">Sélectionner un type</option>
+                 <option value="HOMOLOGATION">HOMOLOGATION</option>
+                 <option value="">FONCTIONNEL</option>
+                 <option value="">NON_FONCTIONNEL</option>
+                 <option value="">AUTOMATISATION</option> 
+       </select>
             </div>
-
-            {/* Priorité Field */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Priorité</label>
               <select
                 name="priorite"
                 value={formData.priorite}
                 onChange={handleChange}
-                className="w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#F4A300]"
-                required
-              >
-                <option value="">Sélectionner une priorité</option>
-                <option value="ELEVEE">ELEVEE</option>
-                <option value="MOYENNE">MOYENNE</option>
-                <option value="FAIBLE">FAIBLE</option>
-              </select>
+                className="w-full px-4 py-2 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-orange-300 italic"
+                style={{ fontFamily: `'Times New Roman', Times, serif` }}
+                required>
+                 <option value="">Sélectionner une priorité</option>
+                 <option value="ELEVEE">ELEVEE</option>
+                 <option value="MOYENNE">MOYENNE</option>
+                 <option value="FAIBE">FAIBLE</option>
+                 
+       </select>
             </div>
-
-           {/* Date Traitement Field */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Date de Traitement</label>
               <input
                 type="date"
                 name="dateTraitement"
                 value={formData.dateTraitement}
                 onChange={handleChange}
-                className="w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#F4A300]"
+                placeholder="date de traitement"
+                className="w-full px-4 py-2 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-orange-300 italic"
+                style={{ fontFamily: `'Times New Roman', Times, serif` }}
                 required
               />
             </div>
-
-            {/* File Input */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Ajouter un fichier</label>
-              <div className="flex items-center gap-3">
-                <input type="file" onChange={handleFileChange} className="flex-1 border p-2 rounded" />
-                <button
-                  type="button"
-                  onClick={handleAddFichier}
-                  className="bg-[#F4A300] text-white px-4 py-2 rounded hover:bg-yellow-600 text-sm"
-                >
-                  Ajouter
-                </button>
-              </div>
-            </div>
+              <input
+                type="file"
+                name="file"
+                onChange={handleChange}
+                placeholder="Ajouter un fichier"
+                className="w-full px-4 py-2 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-orange-300 italic"
+                style={{ fontFamily: `'Times New Roman', Times, serif` }}
+                required
+              />
+              <button
+              type="button"
+              onClick={handleAddFichier}
+              className="bg-[#F4A300] text-white px-4 py-2 rounded hover:bg-yellow-600 text-sm"
+                > Ajouter </button>
 
-            {/* Files Display */}
+            </div>  
             {formData.piecesJointes.length > 0 && (
               <div className="space-y-2">
                 <p className="font-medium text-sm text-gray-700">Fichiers joints :</p>
@@ -222,16 +231,26 @@ const handleAddFichier = () => {
               </div>
             )}
 
-            <button
-              type="submit"
-              className="w-full bg-[#C8102E] text-white py-3 rounded-lg hover:bg-red-800 text-lg font-semibold"
-            >
-              Créer la Demande
-            </button>
+
+            <div className="flex justify-center">
+  <button
+    type="submit"
+    className="w-40 text-white py-2 font-bold transition duration-200 rounded-full mt-4"
+    style={{
+      backgroundColor: "#E65100",
+      fontFamily: `'Times New Roman', Times, serif`,
+      fontSize: "0.875rem",
+    }}
+    disabled={loading}
+  >
+    {loading ? "Chargement..." : "Ajouter la demande"}
+  </button>
+</div>
           </form>
         </div>
       </div>
-    </div>
+      </div>
+   
   );
 };
 
