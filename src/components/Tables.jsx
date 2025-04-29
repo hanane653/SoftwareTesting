@@ -1,7 +1,51 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import DemandeForm from './DemandeForm';
-
+import image2 from '../assets/bk-footer.png';
+import { FaHome } from 'react-icons/fa';
+import 'chart.js/auto';
+import { Chart } from 'react-chartjs-2';
+import {
+  CDBSidebar,
+  CDBSidebarContent,
+  CDBSidebarFooter,
+  CDBSidebarHeader,
+  CDBSidebarMenu,
+  CDBSidebarMenuItem,
+} from 'cdbreact';
+import { NavLink } from 'react-router-dom';
+import {
+  Card,
+  Typography,
+  List,
+  ListItem,
+  ListItemPrefix,
+  ListItemSuffix,
+  Chip,
+} from "@material-tailwind/react";
+import {
+  PresentationChartBarIcon,
+  ShoppingBagIcon,
+  UserCircleIcon,
+  Cog6ToothIcon,
+  InboxIcon,
+  PowerIcon,
+} from "@heroicons/react/24/solid";
+const services = [
+  {
+     icon : FaHome,
+     Titre : "Dashboard"
+  }
+];
+const options = {
+  responsive: true,
+  plugins: {
+    title: {
+      display: true,
+      text: 'Steps taken per day',
+    },
+  },
+};
 const Tables = () => {
   const [demandes, setDemandes] = useState([]);
   const [notifications, setNotifications] = useState([]);
@@ -18,7 +62,7 @@ const Tables = () => {
     const notif = { id: Date.now(), message, timestamp, color };
     setNotifications((prev) => [notif, ...prev]);
 
-    // Auto-dismiss après 6s
+    // Auto-dismiss après 6s 
     setTimeout(() => {
       setNotifications((prev) => prev.filter(n => n.id !== notif.id));
     }, 6000);
@@ -41,17 +85,53 @@ const Tables = () => {
 
   return (
     <div className="flex min-h-screen bg-gray-100 mt-20">
-      <aside className="w-64 bg-orange-600 text-white p-6">
-        <h2 className="text-2xl font-bold mb-8">Dashboard</h2>
-        <nav className="flex flex-col gap-4">
-          <a href="#" className="hover:text-gray-200">Demandes</a>
-          <a href="#" className="hover:text-gray-200">Notifications</a>
-        </nav>
-      </aside>
+    
+    <div style={{ display: 'flex', height: '100vh', overflow: 'scroll initial', marginTop:'20px' }}>
+      <CDBSidebar textColor="#fff" backgroundColor="#333">
+        <CDBSidebarHeader prefix={<i className="fa fa-bars fa-large"></i>}>
+          <a href="/" className="text-decoration-none" style={{ color: 'inherit' }}>
+            Sidebar
+          </a>
+        </CDBSidebarHeader>
 
-      <main className="flex-1 p-8 space-y-8">
-       
+        <CDBSidebarContent className="sidebar-content">
+          <CDBSidebarMenu>
+            <NavLink exact to="/" activeClassName="activeClicked">
+              <CDBSidebarMenuItem icon="columns">Dashboard</CDBSidebarMenuItem>
+            </NavLink>
+            <NavLink exact to="/tables" activeClassName="activeClicked">
+              <CDBSidebarMenuItem icon="table">Tables</CDBSidebarMenuItem>
+            </NavLink>
+            <NavLink exact to="/profile" activeClassName="activeClicked">
+              <CDBSidebarMenuItem icon="user">Profile page</CDBSidebarMenuItem>
+            </NavLink>
+            <NavLink exact to="/analytics" activeClassName="activeClicked">
+              <CDBSidebarMenuItem icon="chart-line">Analytics</CDBSidebarMenuItem>
+            </NavLink>
 
+            <NavLink exact to="/hero404" target="_blank" activeClassName="activeClicked">
+              <CDBSidebarMenuItem icon="exclamation-circle">404 page</CDBSidebarMenuItem>
+            </NavLink>
+          </CDBSidebarMenu>
+        </CDBSidebarContent>
+
+        <CDBSidebarFooter style={{ textAlign: 'center' }}>
+          <div
+            style={{
+              padding: '20px 5px',
+            }}
+          >
+            Sidebar Footer
+          </div>
+        </CDBSidebarFooter>
+      </CDBSidebar>
+    </div>
+    
+      <main className="flex-1 p-8 space-y-8 ">
+       <section className="bg-white p-6 rounded shadow">
+        <h3 className="text-lg font-semibold mb-3">Statistiques</h3>
+       </section>
+      
         <section className="bg-white p-6 rounded shadow">
           <h3 className="text-lg font-semibold mb-3">Notifications</h3>
           <ul className="space-y-2">

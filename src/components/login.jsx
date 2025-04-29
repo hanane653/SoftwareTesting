@@ -17,19 +17,19 @@ const Login = () => {
 
     try {
       const response = await axios.post(
-        "http://localhost:8089/login",
-        new URLSearchParams({
+        "http://localhost:8089/auth/login",
+        {
           username,
           password,
-        }),
+        },
         {
           withCredentials: true,
           headers: {
-            "Content-Type": "application/x-www-form-urlencoded",
+            "Content-Type": "application/json",
           },
         }
       );
-
+      
       console.log("✅ Connexion réussie !");
       setLoading(false);
 

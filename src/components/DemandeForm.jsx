@@ -82,7 +82,7 @@ const DemandeForm = ({ onDemandeCree }) => {
         dataToSend.append('piecesJointes', file);
       });
     }
-
+        
     try {
       const response = await fetch('http://localhost:8084/api/demandes', {
         method: 'POST',
@@ -187,18 +187,20 @@ const DemandeForm = ({ onDemandeCree }) => {
             
             </select>
             <input type="number" name="nombreRessources" value={formData.NombreRessources} onChange={handleChange} placeholder='Nombre de ressources' className='w-full px-4 py-2 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-orange-300 italic' style={{ fontFamily: `'Times New Roman', Times, serif` }} />
+              {
+            /*
             <input type="text" name="dateDebutTraitement" value={formData.dateDebutTraitement}
               onChange={handleChange} onFocus={onDateFocus} onBlur={onDateBlur}
               placeholder="Date de début de traitement"
               className="w-full px-4 py-2 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-orange-300 italic"
               style={{ fontFamily: `'Times New Roman', Times, serif` }} required />
-
+            
             <input type="text" name="dateFinTraitement" value={formData.dateFinTraitment}
               onChange={handleChange} onFocus={onDateFocus} onBlur={onDateBlur}
               placeholder="Date de fin de traitement"
               className="w-full px-4 py-2 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-orange-300 italic"
               style={{ fontFamily: `'Times New Roman', Times, serif` }} />
-
+           */ }
 <input type="file" name="file" onChange={handleFileChange}
   className="w-full px-4 py-2 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-orange-300 italic"
   style={{ fontFamily: `'Times New Roman', Times, serif` }} />
@@ -216,7 +218,7 @@ const DemandeForm = ({ onDemandeCree }) => {
                 ))}
               </div>
             )}
-
+               
             <div className="flex justify-center">
               <button type="submit"
                 className="w-40 text-white py-2 font-bold transition duration-200 rounded-full mt-4"
