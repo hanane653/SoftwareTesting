@@ -55,7 +55,7 @@ const ChatDirect = () => {
   };
 
   return (
-    <div className="max-w-2xl mx-auto mt-10 p-6 rounded-xl bg-white shadow-lg font-sans">
+    <div className="max-w-2xl mx-auto mt-16 p-6 rounded-xl bg-white shadow-lg font-sans">
       <h2 className="text-2xl font-semibold text-center mb-4 text-gray-700">Chat en Direct</h2>
 
       <div className="h-64 overflow-y-auto border border-gray-300 rounded-lg p-4 bg-gray-50 mb-4">

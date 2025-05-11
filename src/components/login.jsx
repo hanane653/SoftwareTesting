@@ -3,6 +3,7 @@ import axios from "axios";
 import image from "../assets/attijari.jpg";
 import image2 from "../assets/bk-footer.png";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 
 const Login = () => {
   const [username, setUsername] = useState("");
@@ -10,10 +11,19 @@ const Login = () => {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
-
+  const { setUser } = useAuth();
+  const [successMessage,setSuccessMessage] = useState('');
+  {
+    successMessage &&(
+      <div className="mb-4 p-3 rounded bg-green-100 text-green-800 shadow" >
+  {successMessage}
+      </div>
+    )
+  };
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
+    setError("");
 
     try {
       const response = await axios.post(
@@ -29,8 +39,13 @@ const Login = () => {
           },
         }
       );
+      const userRes = await axios.get("http://localhost:8089/auth/user/me",{withCredentials:true,});
+      setUser(userRes.data);
       
       console.log("✅ Connexion réussie !");
+      
+      
+      
       setLoading(false);
 
       if (response.data.role === "ADMIN") {
@@ -38,19 +53,21 @@ const Login = () => {
       } else if (response.data.role === "USER") {
         navigate("/user-dashboard");
       } else {
-        navigate("/dashboard");
+        setSuccessMessage("Connexion réussie!");
+        setTimeout(()=>navigate("/dashboard"),30);
       }
     } catch (err) {
       setLoading(false);
       setError("❌ Nom d'utilisateur ou mot de passe incorrect");
     }
   };
-
+ 
+ 
   return (
     <div className="min-h-screen relative mt-16">
       {/* Image de fond avec filtre */}
       <div
-        className="absolute inset-0 bg-cover bg-center filter grayscale brightness-200"
+        className="absolute inset-0 bg-cover bg-center filter grayscale-20 brightness-200"
         style={{
           backgroundImage: `url(${image2})`,
           backgroundSize: 'cover', 

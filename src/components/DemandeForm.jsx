@@ -5,14 +5,15 @@ import { useNavigate } from "react-router-dom";
 
 const DemandeForm = ({ onDemandeCree }) => {
   const [formData, setFormData] = useState({
-    titre: '',
+    projet: '',
+    domaine: '',
     description: '',
-    type: '',
+    sujet: '',
     priorite: '',
     statut: 'En attente',
-    dateDebutTraitement: '', 
-    dateFinTraitment: '',
-    NombreRessources :'',
+    dateDebutPlanifiee: '', 
+    dateFinPlanifiee: '',
+    chargePlanifiee:'',
     piecesJointes: [],
   });
 
@@ -69,13 +70,15 @@ const DemandeForm = ({ onDemandeCree }) => {
     setSuccessMessage("");
 
     const dataToSend = new FormData();
-    dataToSend.append('titre', formData.titre);
+    dataToSend.append('projet', formData.projet);
+    dataToSend.append('domaine',formData.domaine)
     dataToSend.append('description', formData.description);
-    dataToSend.append('type', formData.type);
+    dataToSend.append('sujet', formData.sujet);
     dataToSend.append('priorite', formData.priorite);
-    dataToSend.append('nombreRessources',formData.NombreRessources)
-    dataToSend.append('dateDebutTraitement', formData.dateDebutTraitement);
-    dataToSend.append('dateFinTraitement', formData.dateFinTraitment);
+    dataToSend.append('dateDebutPlanifiee', formData.dateDebutPlanifiee);
+    dataToSend.append('dateFinPlanifiee', formData.dateFinPlanifiee);
+    dataToSend.append('chargePlanifiee' , formData.chargePlanifiee);
+     
 
     if (formData.piecesJointes.length > 0) {
       formData.piecesJointes.forEach((file) => {
@@ -99,14 +102,15 @@ const DemandeForm = ({ onDemandeCree }) => {
         setSuccessMessage("Votre demande a été envoyée avec succès !");
         onDemandeCree?.(created);
         setFormData({
-          titre: '',
+          projet: '',
+          domaine: '',
           description: '',
-          type: '',
+          sujet: '',
           priorite: '',
           statut: '',
-          NombreRessources:'',
-          dateDebutTraitement: '',
-          dateFinTraitment: '',
+          dateDebutPlanifiee: '',
+          dateFinPlanifiee: '',
+          chargePlanifiee: ''  ,
           piecesJointes: [],
         });
         setTimeout(() => setSuccessMessage(""), 5000);
@@ -159,22 +163,38 @@ const DemandeForm = ({ onDemandeCree }) => {
           )}
 
           <form onSubmit={handleSubmit} className="space-y-4">
-            <input type="text" name="titre" value={formData.titre} onChange={handleChange} placeholder="Titre de la demande"
+            <input type="text" name="projet" value={formData.projet} onChange={handleChange} placeholder="Nom du projet"
               className="w-full px-4 py-2 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-orange-300 italic"
               style={{ fontFamily: `'Times New Roman', Times, serif` }} required />
-
+            <select name="domaine" value={formData.domaine} onChange={handleChange}
+              className="w-full px-4 py-2 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-orange-300 italic"
+              style={{ fontFamily: `'Times New Roman', Times, serif` }} required>
+              <option value="">Nom du domaine</option>
+              <option value="Cash_Management">Cash Management</option>
+              <option value="Engagement_Transformation_Credit">Engagement & Transformation crédit</option>
+              <option value="Compliance">Compliance</option>
+              <option value="DATALAKE">Datalake</option>
+              <option value="Finance_Compta">Finance et Comptabilité</option>
+              <option value="Risque_Reglementaire">Risque réglementaire</option>
+              <option value="SWIFT">SWIFT</option>
+              <option value="Trade_Finance">Trade Finance</option>
+              <option value="Distribution">Distribution</option>
+              <option value="Self_Care">Self Care</option>
+            </select>
             <textarea name="description" value={formData.description} onChange={handleChange} placeholder="Description"
               className="w-full px-4 py-2 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-orange-300 italic"
               style={{ fontFamily: `'Times New Roman', Times, serif` }} required />
 
-            <select name="type" value={formData.type} onChange={handleChange}
+            <select name="sujet" value={formData.sujet} onChange={handleChange}
               className="w-full px-4 py-2 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-orange-300 italic"
               style={{ fontFamily: `'Times New Roman', Times, serif` }} required>
-              <option value="">Type de demande</option>
+              <option value="">Sujet de la demande</option>
               <option value="HOMOLOGATION">HOMOLOGATION</option>
-              <option value="FONCTIONNEL">FONCTIONNEL</option>
-              <option value="NON_FONCTIONNEL">NON_FONCTIONNEL</option>
+              <option value="qualifiaction_fonctionnelle">QUALIFICATION FONCTIONNELLE</option>
+              <option value="Formation_Test">Demande de Formation TESTING</option>
               <option value="AUTOMATISATION">AUTOMATISATION</option>
+              <option value="lancement_TNRs">Lancement des TNRs</option>
+              <option value="jeux_donnees">Préparation des jeux de données</option>
             </select>
 
             <select name="priorite" value={formData.priorite} onChange={handleChange}
@@ -186,21 +206,23 @@ const DemandeForm = ({ onDemandeCree }) => {
               <option value="FAIBLE">FAIBLE</option>
             
             </select>
-            <input type="number" name="nombreRessources" value={formData.NombreRessources} onChange={handleChange} placeholder='Nombre de ressources' className='w-full px-4 py-2 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-orange-300 italic' style={{ fontFamily: `'Times New Roman', Times, serif` }} />
-              {
-            /*
-            <input type="text" name="dateDebutTraitement" value={formData.dateDebutTraitement}
+           {  /* <input type="number" name="nombreRessources" value={formData.NombreRessources} onChange={handleChange} placeholder='Nombre de ressources' className='w-full px-4 py-2 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-orange-300 italic' style={{ fontFamily: `'Times New Roman', Times, serif` }} /> */ }
+              
+           <input type="text" name="chargePlanifiee" value={formData.chargePlanifiee} onChange={handleChange} placeholder="Charge Planifiée"
+              className="w-full px-4 py-2 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-orange-300 italic"
+              style={{ fontFamily: `'Times New Roman', Times, serif` }} required />
+            <input type="text" name="dateDebutPlanifiee" value={formData.dateDebutPlanifiee}
               onChange={handleChange} onFocus={onDateFocus} onBlur={onDateBlur}
-              placeholder="Date de début de traitement"
+              placeholder="Date de début planifiée"
               className="w-full px-4 py-2 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-orange-300 italic"
               style={{ fontFamily: `'Times New Roman', Times, serif` }} required />
             
-            <input type="text" name="dateFinTraitement" value={formData.dateFinTraitment}
+            <input type="text" name="dateFinPlanifiée" value={formData.dateFinPlanifiee}
               onChange={handleChange} onFocus={onDateFocus} onBlur={onDateBlur}
-              placeholder="Date de fin de traitement"
+              placeholder="Date de fin planifiee"
               className="w-full px-4 py-2 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-orange-300 italic"
-              style={{ fontFamily: `'Times New Roman', Times, serif` }} />
-           */ }
+              style={{ fontFamily: `'Times New Roman', Times, serif` }}  />
+           
 <input type="file" name="file" onChange={handleFileChange}
   className="w-full px-4 py-2 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-orange-300 italic"
   style={{ fontFamily: `'Times New Roman', Times, serif` }} />

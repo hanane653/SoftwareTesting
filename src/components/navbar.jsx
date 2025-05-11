@@ -2,9 +2,30 @@ import React, { useState } from "react";
 import image from "../assets/attijari.jpg";
 import image2 from "../assets/bk-footer.png";
 import { useNavigate } from "react-router-dom";
+import {useAuth} from "../context/AuthContext";
+import axios from "axios";
+
+
+
 
 const Navbar = () => {
   const navigate = useNavigate();
+  const { setUser } = useAuth();
+  const [showMenu,setShowMenu] = useState(false);
+  const toggleMenu = () => {
+    setShowMenu(!showMenu);
+  };
+  const handleLogout = async () => {
+    try{
+      await axios.post("http://localhost:8089/auth/logout",{},{withCredentials:true
+    });
+    setUser(null);
+    navigate("/SignIn");
+  }
+  catch(err){
+    console.error("erreur lors de la déconnexion");
+  }
+  };
   const handleClick = () =>{
     navigate("/SignIn");
   }         
@@ -16,11 +37,13 @@ const Navbar = () => {
   }  
   const handleDashClick= () =>{
     navigate("/dashboard");
+  
   }  
+  const handleAboutClick=()=>{
+    navigate("/about");
+  }
+  const {user} =  useAuth();
   return (
-
-    
-
     <nav className="bg-white dark:bg-gray-900 fixed w-full z-20 top-0 start-0 border-b border-gray-200 dark:border-gray-600">
         <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-3">
           <a
@@ -30,19 +53,43 @@ const Navbar = () => {
             <img src={image} className="h-12" alt="AWB Logo" />
           </a>
           <div className="flex md:order-2 space-x-3 md:space-x-0 rtl:space-x-reverse">
-            <button
-              onClick={handleClick}
-              type="submit"
-              className="w-40 text-white py-2 font-bold transition duration-200 rounded-full mt-4"
-              style={{
-                backgroundColor: "#E65100", // couleur orange
-                fontFamily: `'Times New Roman', Times, serif`,
-                fontSize: "0.875rem",
-                
-              }}
-            >
-             Se connecter 
-            </button>
+          {user ? ( 
+  <div className="flex items-center space-x-2 mt-4 relative">
+    <img
+      src={user.avatar} 
+      alt="User Avatar"
+      className="w-8 h-8 rounded-full"
+      onClick={toggleMenu}
+    />
+    <span className="text-black font-bold">{user.username}</span>
+    {
+      showMenu && (
+        <div className="absolute right-0 mt-2 w-40 bg-white border rounded shadow-md z-50">
+          <button
+          onClick={handleLogout}
+          className="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-100">
+         Se déconnecter
+          </button>
+          </div>
+      )
+    }
+  </div>
+) : (
+  <button
+    onClick={handleClick}
+    type="submit"
+    style={{
+      backgroundColor: "#E65100",
+      fontFamily: "Times New Roman, Times, serif",
+      fontSize: "0.875rem",
+    }}
+    className="w-40 text-white py-2 font-bold transition duration-200 rounded-full mt-4"
+  >
+    Se connecter
+  </button>
+)}
+
+
             <button
               data-collapse-toggle="navbar-sticky"
               type="button"
@@ -52,7 +99,7 @@ const Navbar = () => {
             >
               <span className="sr-only">Open main menu</span>
               <svg
-                className="w-5 h-5"
+                className="w-5 h-5"  
                 aria-hidden="true"
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
@@ -103,6 +150,16 @@ const Navbar = () => {
                   className="block py-2 px-3 text-gray-900 rounded-sm hover:bg-[#E65100] md:hover:bg-transparent md:hover:text-red-700 md:p-0 md:dark:hover:text-red-500 dark:text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700 no-underline"
                 >
                   Bibliothéque Documentaire
+                </a>
+              </li>
+              <li>
+                <a
+                  href="#"
+                  style={{fontFamily: `'Times New Roman', Times, serif`,}}
+                  onClick={handleAboutClick}
+                  className="block py-2 px-3 text-gray-900 rounded-sm hover:bg-[#E65100] md:hover:bg-transparent md:hover:text-red-700 md:p-0 md:dark:hover:text-red-500 dark:text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700 no-underline"
+                >
+                  A propos
                 </a>
               </li>
               <li>
