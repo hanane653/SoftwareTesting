@@ -69,6 +69,11 @@ const DemandeForm = ({ onDemandeCree }) => {
     setError("");
     setSuccessMessage("");
 
+      const username = localStorage.getItem('username');
+    if (!username) {
+        throw new Error('User not authenticated');
+    }
+
     const dataToSend = new FormData();
     dataToSend.append('projet', formData.projet);
     dataToSend.append('domaine',formData.domaine)
@@ -77,8 +82,7 @@ const DemandeForm = ({ onDemandeCree }) => {
     dataToSend.append('priorite', formData.priorite);
     dataToSend.append('dateDebutPlanifiee', formData.dateDebutPlanifiee);
     dataToSend.append('dateFinPlanifiee', formData.dateFinPlanifiee);
-    dataToSend.append('chargePlanifiee' , formData.chargePlanifiee);
-     
+    dataToSend.append('chargePlanifiee' , formData.chargePlanifiee); 
 
     if (formData.piecesJointes.length > 0) {
       formData.piecesJointes.forEach((file) => {
@@ -88,7 +92,11 @@ const DemandeForm = ({ onDemandeCree }) => {
         
     try {
       const response = await fetch('http://localhost:8084/api/demandes', {
+
         method: 'POST',
+         headers: {
+                'X-User-Id': username
+            },
         body: dataToSend,
       });
 
@@ -150,9 +158,7 @@ const DemandeForm = ({ onDemandeCree }) => {
       {/* Contenu principal */}
       <div className="relative z-10 flex flex-col items-center justify-center min-h-screen"
         style={{ fontFamily: `'Times New Roman', Times, serif` }}>
-
-        <img src={image} alt="Logo Attijari" className="h-24 w-auto mb-6" />
-        <div className="bg-white bg-opacity-95 shadow-lg p-10 w-full max-w-md rounded-none">
+        <div className="bg-white bg-opacity-95 shadow-lg p-10 w-full rounded-none display-flex">
           <h2 className="text-2xl font-bold text-center text-gray-800 mb-6">Bienvenue</h2>
           <h3 className="text-xl text-center text-gray-800 mb-6">
             Veuillez soumettre votre demande 
@@ -162,9 +168,9 @@ const DemandeForm = ({ onDemandeCree }) => {
             <p className="text-red-600 text-sm text-center mb-4">{error}</p>
           )}
 
-          <form onSubmit={handleSubmit} className="space-y-4">
+          <form onSubmit={handleSubmit} className="grid grid-cols-2 gap-6">
             <input type="text" name="projet" value={formData.projet} onChange={handleChange} placeholder="Nom du projet"
-              className="w-full px-4 py-2 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-orange-300 italic"
+              className="flex-1 w-full px-4 py-2 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-orange-300 italic"
               style={{ fontFamily: `'Times New Roman', Times, serif` }} required />
             <select name="domaine" value={formData.domaine} onChange={handleChange}
               className="w-full px-4 py-2 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-orange-300 italic"
@@ -182,15 +188,15 @@ const DemandeForm = ({ onDemandeCree }) => {
               <option value="Self_Care">Self Care</option>
             </select>
             <textarea name="description" value={formData.description} onChange={handleChange} placeholder="Description"
-              className="w-full px-4 py-2 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-orange-300 italic"
+              className="flex-1 w-full px-4 py-2 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-orange-300 italic"
               style={{ fontFamily: `'Times New Roman', Times, serif` }} required />
 
             <select name="sujet" value={formData.sujet} onChange={handleChange}
-              className="w-full px-4 py-2 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-orange-300 italic"
+              className="flex-1 w-full px-4 py-2 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-orange-300 italic"
               style={{ fontFamily: `'Times New Roman', Times, serif` }} required>
               <option value="">Sujet de la demande</option>
               <option value="HOMOLOGATION">HOMOLOGATION</option>
-              <option value="qualifiaction_fonctionnelle">QUALIFICATION FONCTIONNELLE</option>
+              <option value="qualification_fonctionnelle">QUALIFICATION FONCTIONNELLE</option>
               <option value="Formation_Test">Demande de Formation TESTING</option>
               <option value="AUTOMATISATION">AUTOMATISATION</option>
               <option value="lancement_TNRs">Lancement des TNRs</option>
@@ -198,7 +204,7 @@ const DemandeForm = ({ onDemandeCree }) => {
             </select>
 
             <select name="priorite" value={formData.priorite} onChange={handleChange}
-              className="w-full px-4 py-2 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-orange-300 italic"
+              className="flex-1 w-full px-4 py-2 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-orange-300 italic"
               style={{ fontFamily: `'Times New Roman', Times, serif` }} required>
               <option value="">Priorité</option>
               <option value="ELEVEE">ÉLEVÉE</option>
@@ -209,24 +215,25 @@ const DemandeForm = ({ onDemandeCree }) => {
            {  /* <input type="number" name="nombreRessources" value={formData.NombreRessources} onChange={handleChange} placeholder='Nombre de ressources' className='w-full px-4 py-2 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-orange-300 italic' style={{ fontFamily: `'Times New Roman', Times, serif` }} /> */ }
               
            <input type="text" name="chargePlanifiee" value={formData.chargePlanifiee} onChange={handleChange} placeholder="Charge Planifiée"
-              className="w-full px-4 py-2 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-orange-300 italic"
+              className="flex-2 w-full px-4 py-2 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-orange-300 italic"
               style={{ fontFamily: `'Times New Roman', Times, serif` }} required />
             <input type="text" name="dateDebutPlanifiee" value={formData.dateDebutPlanifiee}
               onChange={handleChange} onFocus={onDateFocus} onBlur={onDateBlur}
               placeholder="Date de début planifiée"
-              className="w-full px-4 py-2 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-orange-300 italic"
+              className="flex-2 w-full px-4 py-2 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-orange-300 italic"
               style={{ fontFamily: `'Times New Roman', Times, serif` }} required />
             
-            <input type="text" name="dateFinPlanifiée" value={formData.dateFinPlanifiee}
+          {/* <input type="text" name="dateFinPlanifiée" value={formData.dateFinPlanifiee}
               onChange={handleChange} onFocus={onDateFocus} onBlur={onDateBlur}
               placeholder="Date de fin planifiee"
-              className="w-full px-4 py-2 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-orange-300 italic"
-              style={{ fontFamily: `'Times New Roman', Times, serif` }}  />
+              className="flex-2 w-full px-4 py-2 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-orange-300 italic"
+              style={{ fontFamily: `'Times New Roman', Times, serif` }}  />*/} 
            
 <input type="file" name="file" onChange={handleFileChange}
-  className="w-full px-4 py-2 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-orange-300 italic"
-  style={{ fontFamily: `'Times New Roman', Times, serif` }} />
 
+  className="flex-2 w-full px-4 py-2 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-orange-300 italic"
+  style={{ fontFamily: `'Times New Roman', Times, serif` }} />
+    
 
             {formData.piecesJointes.length > 0 && (
               <div className="space-y-2">
@@ -241,8 +248,11 @@ const DemandeForm = ({ onDemandeCree }) => {
               </div>
             )}
                
-            <div className="flex justify-center">
+            
+          </form>
+          <div className="flex justify-center">
               <button type="submit"
+                onClick={handleSubmit}
                 className="w-40 text-white py-2 font-bold transition duration-200 rounded-full mt-4"
                 style={{
                   backgroundColor: "#E65100",
@@ -250,10 +260,11 @@ const DemandeForm = ({ onDemandeCree }) => {
                   fontSize: "0.875rem",
                 }}
                 disabled={loading}>
+                   
                 {loading ? "Chargement..." : "Ajouter la demande"}
+               
               </button>
             </div>
-          </form>
         </div>
       </div>
     </div>

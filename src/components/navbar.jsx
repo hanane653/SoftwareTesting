@@ -1,181 +1,151 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import image from "../assets/attijari.jpg";
-import image2 from "../assets/bk-footer.png";
 import { useNavigate } from "react-router-dom";
-import {useAuth} from "../context/AuthContext";
+import { useAuth } from "../context/AuthContext";
 import axios from "axios";
-
-
-
+import { Menu, X, ChevronDown, User, LogOut } from "lucide-react";
 
 const Navbar = () => {
   const navigate = useNavigate();
-  const { setUser } = useAuth();
-  const [showMenu,setShowMenu] = useState(false);
-  const toggleMenu = () => {
-    setShowMenu(!showMenu);
-  };
-  const handleLogout = async () => {
-    try{
-      await axios.post("http://localhost:8089/auth/logout",{},{withCredentials:true
-    });
-    setUser(null);
-    navigate("/SignIn");
-  }
-  catch(err){
-    console.error("erreur lors de la déconnexion");
-  }
-  };
-  const handleClick = () =>{
-    navigate("/SignIn");
-  }         
-  const handleAcceuilClick = () =>{
-    navigate("/home");
-  }
-  const handlebiblioClick = () =>{
-    navigate("/biblio");
-  }  
-  const handleDashClick= () =>{
-    navigate("/dashboard");
-  
-  }  
-  const handleAboutClick=()=>{
-    navigate("/about");
-  }
-  const {user} =  useAuth();
-  return (
-    <nav className="bg-white dark:bg-gray-900 fixed w-full z-20 top-0 start-0 border-b border-gray-200 dark:border-gray-600">
-        <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-3">
-          <a
-            href="https://SoftwareTestingAWB.com/"
-            className="flex items-center space-x-3 rtl:space-x-reverse"
-          >
-            <img src={image} className="h-12" alt="AWB Logo" />
-          </a>
-          <div className="flex md:order-2 space-x-3 md:space-x-0 rtl:space-x-reverse">
-          {user ? ( 
-  <div className="flex items-center space-x-2 mt-4 relative">
-    <img
-      src={user.avatar} 
-      alt="User Avatar"
-      className="w-8 h-8 rounded-full"
-      onClick={toggleMenu}
-    />
-    <span className="text-black font-bold">{user.username}</span>
-    {
-      showMenu && (
-        <div className="absolute right-0 mt-2 w-40 bg-white border rounded shadow-md z-50">
-          <button
-          onClick={handleLogout}
-          className="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-100">
-         Se déconnecter
-          </button>
-          </div>
-      )
+  const { setUser, user } = useAuth();
+  const [showMenu, setShowMenu] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+  const [successMessage, setSuccessMessage] = useState("");
+
+  useEffect(() => {
+    const handleScroll = () => setScrolled(window.scrollY > 10);
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  const handleHome = () => navigate("/home");
+  const handleAbout = () => navigate("/about");
+  const handleBiblio = () => navigate("/biblio");
+  const handleContact = () => navigate("/contact");
+
+  const handleDash = async () => {
+    try {
+          const userRes = await axios.get("http://localhost:8089/auth/user/me",{withCredentials:true,});
+          
+          setUser(userRes.data);
+      if (userRes.data.role === "ADMINISTRATEUR") {
+        navigate("/dashboard");
+      } else if (userRes.data.role === "RESSOURCE_TESTING") {
+        navigate(`/dashRes/${userRes.data.username}`);
+      } else {
+        setSuccessMessage("Connexion réussie!");
+        setTimeout(() => navigate("/dashboard"), 30);
+      }
+    } catch (err) {
+      console.error("Erreur lors de la redirection");
     }
-  </div>
-) : (
-  <button
-    onClick={handleClick}
-    type="submit"
-    style={{
-      backgroundColor: "#E65100",
-      fontFamily: "Times New Roman, Times, serif",
-      fontSize: "0.875rem",
-    }}
-    className="w-40 text-white py-2 font-bold transition duration-200 rounded-full mt-4"
-  >
-    Se connecter
-  </button>
-)}
+  };
 
+  const handleLogout = async () => {
+    try {
+      await axios.post("http://localhost:8089/auth/logout", {}, { withCredentials: true });
+      setUser(null);
+      navigate("/SignIn");
+    } catch (err) {
+      console.error("Erreur lors de la déconnexion");
+    }
+  };
 
-            <button
-              data-collapse-toggle="navbar-sticky"
-              type="button"
-              className="inline-flex items-center p-2 w-10 h-9 justify-center text-sm text-gray-500 rounded-lg md:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600"
-              aria-controls="navbar-sticky"
-              aria-expanded="false"
-            >
-              <span className="sr-only">Open main menu</span>
-              <svg
-                className="w-5 h-5"  
-                aria-hidden="true"
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 17 14"
+  const navItems = [
+    { name: "Accueil", action: handleHome },
+    { name: "Dashboard", action: handleDash },
+    { name: "Bibliothèque Documentaire", action: handleBiblio },
+    { name: "À propos", action: handleAbout },
+    { name: "Contact", action: handleContact },
+  ];
+
+  return (
+    <nav className={`fixed w-full top-0 z-50 transition-all duration-500 ease-in-out ${
+      scrolled ? "bg-white shadow-lg" : "bg-white/90 backdrop-blur-md"
+    }`}>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex justify-between items-center h-16">
+          {/* Logo */}
+          <div className="flex-shrink-0">
+            <img src={image} className="h-16 w-auto" alt="Attijari Bank Logo" />
+          </div>
+
+          {/* Desktop Navigation */}
+          <div className="hidden md:flex md:items-center md:space-x-8">
+            {navItems.map((item) => (
+              <button
+                key={item.name}
+                onClick={item.action}
+                className="relative group px-3 py-2 text-sm font-medium text-gray-800 hover:text-orange-600 transition-colors duration-200"
               >
-                <path
-                  stroke="currentColor"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M1 1h15M1 7h15M1 13h15"
-                />
-              </svg>
+                <span className="relative z-10">{item.name}</span>
+                <span className="absolute bottom-0 left-0 w-full h-0.5 bg-orange-600 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-200" />
+              </button>
+            ))}
+          </div>
+
+          {/* User Menu */}
+          <div className="flex items-center gap-4">
+            {user ? (
+              <div className="relative">
+                <button onClick={() => setShowMenu(!showMenu)} className="flex items-center space-x-3 focus:outline-none">
+                  <div className="w-10 h-10 rounded-full bg-orange-100 flex items-center justify-center">
+                    {user.avatar ? (
+                      <img src={user.avatar} alt={user.username} className="w-full h-full rounded-full object-cover" />
+                    ) : (
+                      <User className="w-5 h-5 text-orange-600" />
+                    )}
+                  </div>
+                  <span className="hidden md:block font-medium text-gray-700">{user.username}</span>
+                  <ChevronDown className={`w-4 h-4 text-gray-600 transition-transform duration-200 ${showMenu ? "rotate-180" : ""}`} />
+                </button>
+
+                {showMenu && (
+                  <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg py-1 z-50 border border-gray-100">
+                    <button
+                      onClick={handleLogout}
+                      className="flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-orange-50 hover:text-orange-600"
+                    >
+                      <LogOut className="w-4 h-4 mr-2" />
+                      Se déconnecter
+                    </button>
+                  </div>
+                )}
+              </div>
+            ) : (
+              <button
+                onClick={() => navigate("/SignIn")}
+                className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-full text-white bg-orange-600 hover:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500 transition-all duration-200"
+              >
+                Se connecter
+              </button>
+            )}
+
+            {/* Mobile menu button */}
+            <button
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+              className="md:hidden rounded-lg p-2 hover:bg-gray-100 focus:outline-none"
+            >
+              {isMobileMenuOpen ? <X className="h-6 w-6 text-gray-600" /> : <Menu className="h-6 w-6 text-gray-600" />}
             </button>
           </div>
-          <div
-            className="items-center justify-between hidden w-full h-9 md:flex md:w-auto md:order-1 top-0"
-            id="navbar-sticky"
-          >
-            <ul className="flex flex-col p-3 md:p-0 mt-4 font-medium md:space-x-8 rtl:space-x-reverse md:flex-row md:mt-0 md:border-0 md:bg-white dark:bg-gray-800 md:dark:bg-gray-900 dark:border-gray-700 no-underline">
-              <li>
-                <a
-                  href="#"
-                  className="block py-2 px-3 text-gray-900 bg-orange-600 rounded-sm md:bg-transparent md:text-red-700 md:p-0 md:dark:text-red-500 hover:bg-[#E65100] md:hover:bg-transparent md:hover:text-red-500 no-underline"
-                  aria-current="page"
-                  style={{fontFamily: `'Times New Roman', Times, serif`,}}
-                  onClick={handleAcceuilClick}
-                >
-                  Acceuil
-                </a>
-              </li>
-              <li>
-                <a
-                  href="#"
-                  onClick={handleDashClick}
-                  style={{fontFamily: `'Times New Roman', Times, serif`,}}
-                  className="block py-2 px-3 text-gray-900 rounded-sm hover:bg-[#E65100] md:hover:bg-transparent md:hover:text-red-700 md:p-0 md:dark:hover:text-red-500 dark:text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700 no-underline"
-                  
-                >
-                  Dashboard
-                </a>
-              </li>
-              <li>
-                <a
-                  href="#"
-                  style={{fontFamily: `'Times New Roman', Times, serif`,}}
-                  onClick={handlebiblioClick}
-                  className="block py-2 px-3 text-gray-900 rounded-sm hover:bg-[#E65100] md:hover:bg-transparent md:hover:text-red-700 md:p-0 md:dark:hover:text-red-500 dark:text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700 no-underline"
-                >
-                  Bibliothéque Documentaire
-                </a>
-              </li>
-              <li>
-                <a
-                  href="#"
-                  style={{fontFamily: `'Times New Roman', Times, serif`,}}
-                  onClick={handleAboutClick}
-                  className="block py-2 px-3 text-gray-900 rounded-sm hover:bg-[#E65100] md:hover:bg-transparent md:hover:text-red-700 md:p-0 md:dark:hover:text-red-500 dark:text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700 no-underline"
-                >
-                  A propos
-                </a>
-              </li>
-              <li>
-                <a
-                  href="#"
-                  style={{fontFamily: `'Times New Roman', Times, serif`,}}
-                  className="block py-2 px-3 text-gray-900 rounded-sm hover:bg-[#E65100] md:hover:bg-transparent md:hover:text-red-700 md:p-0 md:dark:hover:text-red-500 dark:text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700 no-underline"
-                >
-                  Contact
-                </a>
-              </li>
-            </ul>
+        </div>
+      </div>
+
+      {/* Mobile Navigation */}
+      {isMobileMenuOpen && (
+        <div className="md:hidden bg-white border-t border-gray-100">
+          <div className="px-2 pt-2 pb-3 space-y-1">
+            {navItems.map((item) => (
+              <button key={item.name} onClick={() => { item.action(); setIsMobileMenuOpen(false); }} className="block w-full px-3 py-2 text-base font-medium text-gray-700 hover:text-orange-600 hover:bg-orange-50 rounded-md transition-colors duration-200">
+                {item.name}
+              </button>
+            ))}
           </div>
         </div>
-      </nav>
-    
+      )}
+    </nav>
   );
 };
 

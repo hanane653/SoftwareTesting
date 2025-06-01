@@ -37,25 +37,36 @@ const Login = () => {
           headers: {
             "Content-Type": "application/json",
           },
+            credentials: 'include',
+            body: JSON.stringify({ username, password })
         }
       );
       const userRes = await axios.get("http://localhost:8089/auth/user/me",{withCredentials:true,});
       setUser(userRes.data);
+      console.log(userRes.data);
       
       console.log("✅ Connexion réussie !");
       
       
-      
+      // Stocker les informations de l'utilisateur dans le localStorage
+        localStorage.setItem('userId', userRes.data.id);
+        localStorage.setItem('userRoles', JSON.stringify(userRes.data.role));
+        localStorage.setItem('username', userRes.data.username);
+
       setLoading(false);
 
-      if (response.data.role === "ADMIN") {
-        navigate("/admin-dashboard");
-      } else if (response.data.role === "USER") {
-        navigate("/user-dashboard");
-      } else {
+      if (userRes.data.role === "ADMINISTRATEUR") {
+        navigate("/dashboard");
+      } else if (userRes.data.role === "RESSOURCE_TESTING") {
+        navigate(`/dashRes/${userRes.data.username}`);
+      } else if (userRes.data.role === "RESPONSABLE_DOMAINE") {
+        navigate(`/dashResDomaine/${userRes.data.domaine}`);
+      } 
+      else {
         setSuccessMessage("Connexion réussie!");
         setTimeout(()=>navigate("/dashboard"),30);
       }
+
     } catch (err) {
       setLoading(false);
       setError("❌ Nom d'utilisateur ou mot de passe incorrect");

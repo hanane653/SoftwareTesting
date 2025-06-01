@@ -17,7 +17,7 @@ const Tables = () => {
 
   useEffect(() => {
     axios.get('http://localhost:8084/api/demandes').then(res => setDemandes(res.data));
-    //axios.get('http://localhost:8084/api/ressources').then(res => setRessources(res.data));
+    axios.get('http://localhost:8089/auth/users').then(res => setRessources(res.data));
   }, []);
 
   const addNotification = (message, type = 'info') => {
@@ -196,6 +196,73 @@ const Tables = () => {
                 </table>
               </div>
             </section>
+
+            {/* Listes des utilisateurs 
+            <section className="bg-white rounded-xl shadow p-6">
+              <h1 className="text-2xl font-bold text-gray-800 mb-6">Liste des Demandes</h1>
+              <div className="overflow-x-auto">
+                <table className="min-w-full text-sm">
+                  <thead className="bg-gray-100 text-gray-600">
+                    <tr>
+                      <th className="px-6 py-2">Id utilisateur</th>
+                      <th className=" px-6 border-r">Nom utilisateur</th>
+                      <th className="px-6 border-r">Role</th>
+                      <th className=" px-6 border-r">Pole</th>
+                      
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {ressources.map((ressource, index) => (
+                      <tr key={ressource.id} className="border-t hover:bg-gray-50">
+                        <td className="px-6 border-r py-2">{demande.projet}</td>
+                        <td className="px-6 border-r">{demande.domaine}</td>
+                        <td className="px-6 border-r">{demande.sujet}</td>
+                        <td className="px-6 border-r">{demande.description}</td>
+                        <td className="px-6 border-r">{demande.priorite}</td>
+                        <td className="px-6 border-r">
+                          <select
+                            className="border rounded px-2 py-1"
+                            value={demande.statut}
+                            onChange={e => handleStatusChange(index, e.target.value)}>
+                            <option value="EN ATTENTE">EN ATTENTE</option>
+                            <option value="TRAITEE">TRAITEE</option>
+                            <option value="EN COURS">EN COURS</option>
+                            <option value="ARCHIVEE">ARCHIVEE</option>
+                          </select>
+                        </td>
+                        <td className="px-6 border-r text-gray-700">{new Date(demande.dateDebutPlanifiee).toLocaleDateString()}</td>
+                        <td className="px-6 border-r">{new Date(demande.dateFinPlanifiee).toLocaleDateString()}</td>
+                        <td className="px-6border-r">
+                          <select
+                            className="border rounded px-2 py-1"
+                            value={selectedRessources[demande.id] || ''}
+                            onChange={e =>
+                              setSelectedRessources({ ...selectedRessources, [demande.id]: e.target.value })
+                            }>
+                            <option value="">-- Choisir --</option>
+                            <option value="Zainab Joual">Zainab JOUAL</option>
+                            <option value="Fatima zahra ">Fatima zahra SEBHAOUI</option>
+                            <option value="Mohammed HALLOUMI">Mohammed HALLOUMI</option>
+                            {ressources.map(res => (
+                              <option key={res.id} value={res.id}>{res.nom}</option>
+                            ))}
+                          </select>
+                        </td>
+                        <td className="px-6 border-r">{demande.chargePlanifiee}</td>
+                        <td>
+                          <button
+                            className="bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700"
+                            onClick={() => handleAffecter(demande.id)}>
+                            Affecter
+                          </button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </section>
+            */}
           </div>
         </main>
       </div>
