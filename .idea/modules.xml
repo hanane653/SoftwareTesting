@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/Software_testing_parent/ChatDirect/ChatDirect.iml" filepath="$PROJECT_DIR$/Software_testing_parent/ChatDirect/ChatDirect.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/Software_testing_backend.iml" filepath="$PROJECT_DIR$/.idea/Software_testing_backend.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Software_testing_parent/Software_testing_parent.iml" filepath="$PROJECT_DIR$/Software_testing_parent/Software_testing_parent.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Software_testing_parent/bibliotheque-backend/bibliotheque-backend.iml" filepath="$PROJECT_DIR$/Software_testing_parent/bibliotheque-backend/bibliotheque-backend.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Software_testing_parent/dashboard/dashboard.iml" filepath="$PROJECT_DIR$/Software_testing_parent/dashboard/dashboard.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Software_testing_parent/demo/demo.iml" filepath="$PROJECT_DIR$/Software_testing_parent/demo/demo.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Software_testing_parent/user_service/user_service.iml" filepath="$PROJECT_DIR$/Software_testing_parent/user_service/user_service.iml" />
+    </modules>
+  </component>
+</project>
