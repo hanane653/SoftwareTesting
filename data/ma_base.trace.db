@@ -2031,3 +2031,21 @@ select d1_0.id_demande,d1_0.charge_planifiee,d1_0.date_debut_planifiee,d1_0.date
 	at org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:659)
 	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:61)
 	at java.base/java.lang.Thread.run(Thread.java:842)
+2025-07-14 09:10:57.829399+01:00 jdbc[23]: exception
+org.h2.jdbc.JdbcSQLNonTransientException: L'objet est déjà fermé
+The object is already closed [90007-222]
+2025-07-14 09:17:26.190428+01:00 jdbc[23]: exception
+org.h2.jdbc.JdbcSQLNonTransientException: L'objet est déjà fermé
+The object is already closed [90007-222]
+2025-07-14 09:53:07.231671+01:00 jdbc[33]: exception
+org.h2.jdbc.JdbcSQLNonTransientException: L'objet est déjà fermé
+The object is already closed [90007-222]
+2025-07-15 14:18:21.395782+01:00 jdbc[53]: exception
+org.h2.jdbc.JdbcSQLNonTransientException: L'objet est déjà fermé
+The object is already closed [90007-222]
+2025-07-25 11:52:47.231845+01:00 jdbc[63]: exception
+org.h2.jdbc.JdbcSQLNonTransientException: L'objet est déjà fermé
+The object is already closed [90007-222]
+2025-07-25 15:34:35.748097+01:00 jdbc[143]: exception
+org.h2.jdbc.JdbcSQLNonTransientException: L'objet est déjà fermé
+The object is already closed [90007-222]

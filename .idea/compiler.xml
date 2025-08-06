@@ -6,18 +6,18 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="demo" />
+        <module name="user_service" />
         <module name="bibliotheque-backend" />
         <module name="dashboard" />
         <module name="ChatDirect" />
-        <module name="user_service" />
+        <module name="Gestion_Demandes" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
       <module name="bibliotheque-backend" target="17" />
       <module name="ChatDirect" target="17" />
       <module name="dashboard" target="17" />
-      <module name="demo" target="17" />
+      <module name="Gestion_Demandes" target="17" />
       <module name="Software_testing_parent" target="17" />
       <module name="user_service" target="17" />
     </bytecodeTargetLevel>
@@ -25,9 +25,9 @@
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
       <module name="ChatDirect" options="-parameters" />
+      <module name="Gestion_Demandes" options="-parameters" />
       <module name="bibliotheque-backend" options="-parameters" />
       <module name="dashboard" options="-parameters" />
-      <module name="demo" options="-parameters" />
       <module name="user_service" options="-parameters" />
     </option>
   </component>
